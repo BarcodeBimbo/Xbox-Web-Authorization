@@ -1,6 +1,15 @@
-<div align=center>
-   <img src="https://github.com/user-attachments/assets/e9680077-f045-4afd-9375-989dacc52152" alt="" height="200">
-</div>
+<p align="center">
+      <img src="https://github.com/user-attachments/assets/e9680077-f045-4afd-9375-989dacc52152" alt="" height="200">
+  <a href="https://discord.gg/tloxp">
+    <img src="https://ptb.discord.com/api/guilds/1258060134060654632/widget.png?style=shield" alt="Discord Server">
+  </a>
+  <a href="https://www.python.org/downloads/">
+    <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/Red-Discordbot">
+  </a>
+  <a href="https://github.com/BarcodeBimbo/Xbox-Web-Authorization/blob/main/xbox_api.py">
+     <img src="https://img.shields.io/badge/html-python-red.svg" alt="xbox_api.py">
+  </a>
+</p>
 
 # Xbox Live Authentication Web-App
 
