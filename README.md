@@ -21,7 +21,7 @@ This project provides a web-based authentication service for Xbox Live, allowing
 ---
 
 ### Preview:
-<video src="https://github.com/user-attachments/assets/8463815e-178d-4236-9602-bdb27514f795.mp4"></video>
+<video src="https://github.com/user-attachments/assets/dda249d0-b1c1-4e59-8e8f-441cd3d5932f.mp4"></video>
 
 ## Installation and Setup
 
