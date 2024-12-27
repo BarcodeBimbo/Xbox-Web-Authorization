@@ -97,7 +97,7 @@ Click the "Logout" button to end your session.
 ---
 
 ## License
-This project is licensed under the MIT License. See the LICENSE file for more details.
+This project is licensed under the GNU General Public License. See the LICENSE file for more details.
 
 ## Disclaimer
 This software is provided "as is" without warranty of any kind. The developers are not liable for any damages arising from its use. Use at your own risk.
