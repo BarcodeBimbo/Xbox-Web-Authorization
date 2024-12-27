@@ -2,7 +2,7 @@
    <img src="https://github.com/user-attachments/assets/e9680077-f045-4afd-9375-989dacc52152" alt="" height="200">
 </div>
 
-# Xbox Live Authentication App
+# Xbox Live Authentication Web-App
 
 This project provides a web-based authentication service for Xbox Live, allowing users to sign in, resolve their Xbox User IDs (XUIDs), and access related information.
 
