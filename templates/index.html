@@ -136,7 +136,7 @@
                                 <div class="token-container">
                                     <div class="alert alert-success break-word">{{ token_data.xuid }}</div>
                                     <button class="btn btn-sm btn-outline-secondary copy-button" 
-                                            data-copy="XBL3.0 x={{ token_data.xuid }}">
+                                            data-copy="{{ token_data.xuid }}">
                                         Copy
                                     </button>
                                 </div>
@@ -185,7 +185,6 @@
                         })
                         .catch(err => {
                             console.error('Failed to copy:', err);
-                            alert('Failed to copy to clipboard');
                         });
                 });
             });
