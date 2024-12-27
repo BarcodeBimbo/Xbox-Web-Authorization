@@ -15,7 +15,7 @@ STORAGE_DIR.mkdir(exist_ok=True)
 
 # Configuration
 CLIENT_ID = ""  # Azure Client ID
-REDIRECT_URI = "http://127.0.0.1:666/oauth_success"
+REDIRECT_URI = "http://127.0.0.1:5965/oauth_success"
 
 # logging configuration
 logging.basicConfig(level=logging.INFO)
@@ -311,4 +311,4 @@ def resolve_xuid():
         return jsonify({'error': 'Failed to resolve XUID'}), 500
 
 if __name__ == '__main__':
-    serve(XboxAPI, host='127.0.0.1', port=666)
+    serve(XboxAPI, host='127.0.0.1', port=5965)
