@@ -62,7 +62,7 @@ Follow these steps to set up and run the application locally:
 ### Running the App
 1. Start the application:
    ```bash
-   python app.py
+   python xbox_api.py
    ```
 
 2. Access the app in your browser at `http://127.0.0.1:5965`.
