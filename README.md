@@ -81,7 +81,7 @@ For production deployment, the Waitress server is recommended:
 
 2. Run the application with Waitress:
    ```bash
-   waitress-serve --port=5965 app:XboxAPI
+   waitress-serve --port=5965 xbox_api:XboxAPI
    ```
 
 ---
