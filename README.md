@@ -35,8 +35,8 @@ Follow these steps to set up and run the application locally:
 
 2. Clone this repository:
    ```bash
-   git clone <repository_url>
-   cd <repository_folder>
+   git clone https://github.com/BarcodeBimbo/Xbox-Web-Authorization.git
+   cd Xbox-Web-Authorization
    ```
 
 3. Install the required Python packages:
