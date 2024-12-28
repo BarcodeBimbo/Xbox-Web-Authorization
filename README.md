@@ -1,7 +1,6 @@
 <div align="center">
-    <img src="https://github.com/user-attachments/assets/e9680077-f045-4afd-9375-989dacc52152" alt="" height="200">
+  <img src="https://github.com/user-attachments/assets/e9680077-f045-4afd-9375-989dacc52152" alt="" height="200">
 </div>
-
 <p align="center">
   <a href="https://discord.gg/tloxp">
     <img src="https://ptb.discord.com/api/guilds/1258060134060654632/widget.png?style=shield" alt="Discord Server">
@@ -10,7 +9,10 @@
     <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/Red-Discordbot">
   </a>
   <a href="https://github.com/BarcodeBimbo/Xbox-Web-Authorization/blob/main/xbox_api.py">
-     <img src="https://img.shields.io/badge/html-python-red.svg" alt="xbox_api.py">
+    <img src="https://img.shields.io/badge/html-python-red.svg" alt="xbox_api.py">
+  </a>
+  <a href="https://github.com/BarcodeBimbo/Xbox-Web-Authorization/blob/main/xbox_api.py">
+    <img src="https://img.shields.io/badge/Xbox_Live_Authentication-107C10.svg?logo=data:image/svg%2bxml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+DQo8IS0tIENyZWF0ZWQgd2l0aCBJbmtzY2FwZSAoaHR0cDovL3d3dy5pbmtzY2FwZS5vcmcvKSAtLT4NCjxzdmcgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIiB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6c29kaXBvZGk9Imh0dHA6Ly9zb2RpcG9kaS5zb3VyY2Vmb3JnZS5uZXQvRFREL3NvZGlwb2RpLTAuZHRkIiB4bWxuczppbmtzY2FwZT0iaHR0cDovL3d3dy5pbmtzY2FwZS5vcmcvbmFtZXNwYWNlcy9pbmtzY2FwZSIgaWQ9InN2ZzQxMzYiIHZlcnNpb249IjEuMSIgaW5rc2NhcGU6dmVyc2lvbj0iMC45MXByZTQgcjEzNzEyIiB3aWR0aD0iMzcyLjM2ODIzIiBoZWlnaHQ9IjM3Mi41NzI4MSIgdmlld0JveD0iMCAwIDM3Mi4zNjgyMyAzNzIuNTcyODEiIHNvZGlwb2RpOmRvY25hbWU9Ilhib3ggTG9nby5zdmciPg0KICA8dGl0bGUgaWQ9InRpdGxlNDE2NiI+WGJveCBMb2dvPC90aXRsZT4NCiAg...base64 data here..." alt="Xbox Live Authentication Badge">
   </a>
 </p>
 
