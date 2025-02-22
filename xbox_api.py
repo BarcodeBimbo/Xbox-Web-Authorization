@@ -2,28 +2,22 @@ from pathlib import Path
 from waitress import serve
 from urllib.parse import urlencode
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
-
 import os, uuid, json, requests, time, logging
 
 XboxAPI = Flask(__name__)
 XboxAPI.secret_key = os.urandom(24)
 Xbox_Token = ""
 
-# File storage configuration
 STORAGE_DIR = Path("token_storage")
 STORAGE_DIR.mkdir(exist_ok=True)
 
-# Configuration
 CLIENT_ID = ""  # Azure Client ID
 REDIRECT_URI = "http://127.0.0.1:5965/oauth_success"
 
-# logging configuration
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# handle XUID resolution
 def get_xuid(xsts_token):
-    """Resolve the XUID for a given Xbox account."""
     global Xbox_Token 
     headers = {
         "Authorization": f"XBL3.0 x={xsts_token['DisplayClaims']['xui'][0]['uhs']};{xsts_token['Token']}",
@@ -49,9 +43,7 @@ def get_xuid(xsts_token):
         logger.error(f"Network error while resolving XUID: {e}")
         return None
 
-
 def store_token_data(token_data):
-    """Store token data in a file with a unique ID"""
     session_id = str(uuid.uuid4())
     file_path = STORAGE_DIR / f"{session_id}.json"
     
@@ -61,7 +53,6 @@ def store_token_data(token_data):
     return session_id
 
 def get_token_data(session_id):
-    """Retrieve token data from file"""
     try:
         file_path = STORAGE_DIR / f"{session_id}.json"
         if file_path.exists():
@@ -72,7 +63,6 @@ def get_token_data(session_id):
     return None
 
 def delete_token_data(session_id):
-    """Delete token data file"""
     try:
         file_path = STORAGE_DIR / f"{session_id}.json"
         if file_path.exists():
@@ -81,17 +71,15 @@ def delete_token_data(session_id):
         pass
 
 def cleanup_old_tokens():
-    """Clean up token files older than 1 hour"""
     current_time = time.time()
     for file_path in STORAGE_DIR.glob("*.json"):
-        if current_time - file_path.stat().st_mtime > 3600:  # 1 hour
+        if current_time - file_path.stat().st_mtime > 3600:
             try:
                 file_path.unlink()
             except Exception:
                 pass
 
 def get_authorization_url():
-    """Generate the Xbox Live authorization URL"""
     url = "https://login.live.com/oauth20_authorize.srf"
     params = {
         "client_id": CLIENT_ID,
@@ -103,7 +91,6 @@ def get_authorization_url():
     return f"{url}?{urlencode(params)}"
 
 def get_access_token(authorization_code):
-    """Exchange authorization code for access token"""
     url = "https://login.live.com/oauth20_token.srf"
     data = {
         "grant_type": "authorization_code",
@@ -118,7 +105,6 @@ def get_access_token(authorization_code):
     return response.json()["access_token"]
 
 def get_user_token(access_token):
-    """Get Xbox Live user token"""
     url = "https://user.auth.xboxlive.com/user/authenticate"
     headers = {"x-xbl-contract-version": "1"}
     data = {
@@ -136,7 +122,6 @@ def get_user_token(access_token):
     return response.json()["Token"]
 
 def get_xsts_token(user_token):
-    """Get XSTS token"""
     url = "https://xsts.auth.xboxlive.com/xsts/authorize"
     headers = {"x-xbl-contract-version": "1"}
     data = {
@@ -153,7 +138,6 @@ def get_xsts_token(user_token):
     return response.json()
 
 def get_profile_data(xsts_token, xuid):
-    """Fetch Xbox profile picture and gamertag"""
     headers = {
         "Authorization": f"XBL3.0 x={xsts_token['DisplayClaims']['xui'][0]['uhs']};{xsts_token['Token']}",
         "Accept-Encoding": "gzip, deflate",
@@ -187,24 +171,28 @@ def get_profile_data(xsts_token, xuid):
         logger.error(f"Error fetching profile: {e}")
         return None
     
-@XboxAPI.route('/fetch_profile')
-def fetch_profile():
-    """Handle profile data fetch request"""
-    if 'session_id' not in session:
-        return jsonify({'error': 'Not authenticated'}), 401
-        
-    token_data = get_token_data(session['session_id'])
-    if not token_data or 'xuid' not in token_data:
-        return jsonify({'error': 'Token data or XUID not found'}), 401
-        
-    profile_data = get_profile_data(token_data['xsts_token'], token_data['xuid'])
-    if profile_data:
-        # Update token data with profile info
-        token_data.update(profile_data)
-        store_token_data(token_data)
-        return jsonify(profile_data)
-    else:
-        return jsonify({'error': 'Failed to fetch profile data'}), 500
+def get_device_code():
+    url = "https://login.live.com/oauth20_connect.srf"
+    params = {
+        "client_id": CLIENT_ID,
+        "scope": "Xboxlive.signin Xboxlive.offline_access",
+        "response_type": "device_code"
+    }
+    response = requests.post(url, data=params)
+    if response.status_code != 200:
+        raise Exception("Failed to get device code")
+    return response.json()
+
+def poll_for_token(device_code, interval):
+    url = "https://login.live.com/oauth20_token.srf"
+    data = {
+        "grant_type": "urn:ietf:params:oauth:grant-type:device_code",
+        "client_id": CLIENT_ID,
+        "device_code": device_code
+    }
+    
+    response = requests.post(url, data=data)
+    return response.json() if response.status_code == 200 else None
 
 @XboxAPI.route('/')
 def index():
@@ -213,7 +201,6 @@ def index():
     if 'session_id' in session:
         token_data = get_token_data(session['session_id'])
         if token_data:
-            # Create a safe version of token_data with only the needed fields
             token_data_safe = {
                 'access_token': token_data.get('access_token', ''),
                 'xuid': token_data.get('xuid', ''),
@@ -231,13 +218,11 @@ def index():
 
 @XboxAPI.route('/login')
 def login():
-    """Initiate the OAuth flow"""
     auth_url = get_authorization_url()
     return redirect(auth_url)
 
 @XboxAPI.route('/oauth_success')
 def oauth_callback():
-    """Handle the OAuth callback"""
     error = request.args.get('error')
     if error:
         flash(f"Authentication error: {error}", "danger")
@@ -249,22 +234,18 @@ def oauth_callback():
         return redirect(url_for('index'))
 
     try:
-        # Get all tokens
         access_token = get_access_token(code)
         user_token = get_user_token(access_token)
         xsts_token = get_xsts_token(user_token)
 
-        # Get XUID
         xuid = get_xuid(xsts_token)
         if not xuid:
             raise Exception("Failed to resolve XUID")
 
-        # Get profile data
         profile_data = get_profile_data(xsts_token, xuid)
         if not profile_data:
             raise Exception("Failed to fetch profile data")
 
-        # Store all data
         token_data = {
             'access_token': access_token,
             'user_token': user_token,
@@ -281,19 +262,76 @@ def oauth_callback():
     except Exception as e:
         flash(f"Authentication failed: {str(e)}", "danger")
         return redirect(url_for('index'))
+        
+@XboxAPI.route('/device_code')
+def get_device_code_route():
+    try:
+        device_code_data = get_device_code()
+        session['device_code'] = device_code_data['device_code']
+        session['interval'] = device_code_data.get('interval', 5)
+        return jsonify({
+            'user_code': device_code_data['user_code'],
+            'verification_uri': device_code_data['verification_uri'],
+            'interval': device_code_data['interval']
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
-@XboxAPI.route('/logout')
-def logout():
-    """Clear the session and log out"""
-    if 'session_id' in session:
-        delete_token_data(session['session_id'])
-    session.clear()
-    flash("Successfully logged out", "success")
-    return redirect(url_for('index'))
+@XboxAPI.route('/poll_auth')
+def poll_authentication():
+    if 'device_code' not in session:
+        return jsonify({'error': 'No device code found'}), 400
+        
+    try:
+        result = poll_for_token(session['device_code'], session['interval'])
+        if result and 'access_token' in result:
+            access_token = result['access_token']
+            user_token = get_user_token(access_token)
+            xsts_token = get_xsts_token(user_token)
+            
+            xuid = get_xuid(xsts_token)
+            if not xuid:
+                raise Exception("Failed to resolve XUID")
+                
+            profile_data = get_profile_data(xsts_token, xuid)
+            if not profile_data:
+                raise Exception("Failed to fetch profile data")
+                
+            token_data = {
+                'access_token': access_token,
+                'user_token': user_token,
+                'xsts_token': xsts_token,
+                'xuid': xuid,
+                'gamertag': profile_data['gamertag'],
+                'profile_pic': profile_data['profile_pic']
+            }
+            session_id = store_token_data(token_data)
+            session['session_id'] = session_id
+            
+            return jsonify({'status': 'success', 'redirect': url_for('index')})
+        return jsonify({'status': 'pending'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@XboxAPI.route('/fetch_profile')
+def fetch_profile():
+    if 'session_id' not in session:
+        return jsonify({'error': 'Not authenticated'}), 401
+        
+    token_data = get_token_data(session['session_id'])
+    if not token_data or 'xuid' not in token_data:
+        return jsonify({'error': 'Token data or XUID not found'}), 401
+        
+    profile_data = get_profile_data(token_data['xsts_token'], token_data['xuid'])
+    if profile_data:
+        token_data.update(profile_data)
+        store_token_data(token_data)
+        return jsonify(profile_data)
+    else:
+        return jsonify({'error': 'Failed to fetch profile data'}), 500
 
 @XboxAPI.route('/resolve_xuid')
 def resolve_xuid():
-    """Handle XUID resolution request"""
     if 'session_id' not in session:
         return jsonify({'error': 'Not authenticated'}), 401
         
@@ -303,12 +341,19 @@ def resolve_xuid():
         
     xuid = get_xuid(token_data['xsts_token'])
     if xuid:
-        # Update token data with XUID
         token_data['xuid'] = xuid
         store_token_data(token_data)
         return jsonify({'xuid': xuid})
     else:
         return jsonify({'error': 'Failed to resolve XUID'}), 500
 
+@XboxAPI.route('/logout')
+def logout():
+    if 'session_id' in session:
+        delete_token_data(session['session_id'])
+    session.clear()
+    flash("Successfully logged out", "success")
+    return redirect(url_for('index'))
+    
 if __name__ == '__main__':
     serve(XboxAPI, host='127.0.0.1', port=5965)
